@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Bulletin Board</title>
+  <style>
+    body {
+      font-family: "Overpass", sans-serif;
+      background: url("images/background.jpg") no-repeat center center fixed;
+      background-size: cover;
+      margin: 0;
+      padding: 20px
+color: #1F1646;
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+
+    /* Controls */
+    #controls {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .input-container {
+      display: inline-block;
+      margin-bottom: 10px;
+    }
+
+    #search-input {
+      padding: 6px 10px;
+      font-size: 1em;
+      color: #333;
+      border: 2px solid #B2292E;
+      border-radius: 4px;
+      width: 200px;
+      box-sizing: border-box;
+margin-bottom: 10px;
+    }
+.button-container {
+  margin-top: 10px;
+}
+
+    .filter-btn {
+      font-family: "Overpass", sans-serif;
+      font-size: 0.9em;
+      color: #B2292E;
+      background-color: #f0f0f0;
+      border: none;
+      border-radius: 4px;
+      padding: 6px 12px;
+      margin: 0 4px;
+      cursor: pointer;
+    }
+    .filter-btn:hover {
+      background-color: #e0e0e0;
+    }
+
+    /* Posts */
+    #posts {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    .post {
+      position: relative;
+      background: #fffdfa;
+      border: 1px solid #e0d9c8;
+      box-shadow: 4px 4px 8px rgba(0,0,0,0.3);
+      padding: 15px;
+      width: 90%;
+      max-width: 250px;
+      text-align: center;
+      cursor: pointer;
+      box-sizing: border-box;
+      color: #1F1646;
+    }
+
+    .post img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+
+    .pin {
+      position: absolute;
+      top: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      border: 1px solid rgba(0,0,0,0.2);
+      box-shadow: 0 2px 2px rgba(0,0,0,0.3);
+      z-index: 10;
+transform-origin: center;
+    }
+
+    .date, .category, .tags {
+      font-size: 0.8em;
+      color: #666;
+      margin-top: 8px;
+    }
+
+    .category {
+      background-color: #f0f0f0;
+      color: #B2292E;
+      font-size: 0.75em;
+      padding: 2px 6px;
+      border-radius: 4px;
+      display: inline-block;
+      margin-top: 6px;
+    }
+
+    /* Responsive */
+    @media (max-width: 480px) {
+      body { padding: 10px; }
+      h1 { font-size: 1.5em; }
+      .post { width: 100%; padding: 10px; }
+      #search-input { width: 100%; }
+    }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      overflow: auto;
+      background: rgba(0,0,0,0.6);
+    }
+    .modal-content {
+      background: #fffdfa;
+      margin: 5% auto;
+      padding: 20px;
+      border: 1px solid #e0d9c8;
+      width: 90%;
+      max-width: 600px;
+      box-shadow: 4px 4px 12px rgba(0,0,0,0.4);
+      border-radius: 8px;
+      position: relative;
+      font-family: "Overpass", sans-serif;
+      color: #1F1646;
+    }
+    .modal-content img {
+      max-width: 100%;
+      height: auto;
+      margin: 10px 0;
+      border-radius: 8px;
+    }
+    .close {
+      position: absolute;
+      top: 8px;
+      right: 12px;
+      font-size: 28px;
+      font-weight: bold;
+      color: #B2292E;
+      cursor: pointer;
+    }
+    .close:hover {
+      color: #003087;
+    }
+
+    /* Tags in modal */
+    #modal-tags span {
+      display: inline-block;
+      background: #f0f0f0;
+      color: #B2292E;
+      padding: 4px 8px;
+      border-radius: 12px;
+      margin: 2px;
+      font-size: 0.8em;
+    }
+/* Responsive */
+@media (max-width: 480px) {
+  body { padding: 10px; }
+  h1 { font-size: 1.5em; }
+  .post { width: 100%; padding: 10px; }
+  #search-input { width: 100%; }
+}
+.admin-controls {
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.admin-controls button {
+  background: #B2292E;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  font-size: 0.9em;
+  border-radius: 4px;
+}
+
+.admin-controls button:hover {
+  background: #7a1e21;
+}
+
+  </style>
+</head>
+<body>
+  <h1>Bulletin Board</h1>
+
+  <!-- Search + Category -->
+<div id="controls">
+  <input type="text" id="search-input" placeholder="Search posts...">
+  <div class="button-container">
+    <button class="filter-btn" data-category="all">All</button>
+    <button class="filter-btn" data-category="events">📂 Events</button>
+    <button class="filter-btn" data-category="jobs">📂 Jobs</button>
+    <button class="filter-btn" data-category="classes">📂 Classes</button>
+  </div>
+</div>
+
+  <!-- Posts -->
+  <div id="posts"></div>
+
+  <!-- Modal -->
+  <div id="modal" class="modal">
+    <div class="modal-content">
+      <span id="modal-close" class="close">&times;</span>
+      <h2 id="modal-title"></h2>
+      <div id="modal-images"></div>
+      <p id="modal-content"></p>
+      <div class="date" id="modal-date"></div>
+      <div class="category" id="modal-category"></div>
+      <div class="tags" id="modal-tags"></div>
+    </div>
+  </div>
+
+  <script>
+let allPosts = [];
+
+fetch('/posts')
+  .then(response => response.json())
+  .then(data => {
+    const today = new Date();
+    // Filter out expired posts
+    allPosts = data.filter(post => new Date(post.expiration) >= today);
+    renderPosts(allPosts);
+
+    // Search
+    const searchInput = document.getElementById('search-input');
+    searchInput.addEventListener('input', () => {
+      const query = searchInput.value.toLowerCase();
+      const filtered = allPosts.filter(post =>
+        post.title.toLowerCase().includes(query) ||
+        post.content.toLowerCase().includes(query) ||
+        post.tags.some(tag => tag.toLowerCase().includes(query))
+      );
+      renderPosts(filtered);
+    });
+
+    // Category buttons
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const category = btn.dataset.category;
+        let filtered = allPosts;
+        if (category !== "all") {
+          filtered = allPosts.filter(post => post.category === category);
+        }
+        renderPosts(filtered);
+      });
+    });
+  })
+  .catch(err => console.error('Error loading posts:', err));
+
+function renderPosts(posts) {
+  const container = document.getElementById('posts');
+  container.innerHTML = '';
+
+  const pinColors = ["#9eade5", "#9271b2", "#b9deff", "#00a9e0", "#afb5bf"];
+
+  posts.forEach(post => {
+    const div = document.createElement('div');
+    div.className = 'post';
+
+    // Pin
+    const pinColor = pinColors[Math.floor(Math.random() * pinColors.length)];
+    div.innerHTML = `
+      <div class="pin" style="background:${pinColor}"></div>
+  <h2>${post.title}</h2>
+  ${post.image ? `<img src="${post.image}" alt="${post.title}">` : ""}
+  <p>${post.teaser}</p>
+  <div class="date">📅 ${post.date || ""}</div>
+  <div class="category">📂 ${post.category || "Uncategorized"}</div>
+`;
+    ;
+
+    // Modal click
+    div.addEventListener('click', () => {
+      document.getElementById('modal-title').textContent = post.title;
+      document.getElementById('modal-content').innerHTML = post.content;
+      document.getElementById('modal-date').textContent = "📅 " + post.date;
+      document.getElementById('modal-category').textContent = "📂 " + post.category;
+
+      // Images in modal
+      const modalImages = document.getElementById('modal-images');
+      modalImages.innerHTML = "";
+      if(post.images && post.images.length) {
+        post.images.forEach(img => {
+          const imageEl = document.createElement('img');
+          imageEl.src = img;
+          modalImages.appendChild(imageEl);
+        });
+      } else if(post.image) {
+        const imageEl = document.createElement('img');
+        imageEl.src = post.image;
+        modalImages.appendChild(imageEl);
+      }
+
+      // Tags
+      const tagsContainer = document.getElementById('modal-tags');
+      tagsContainer.innerHTML = "";
+      if(post.tags) {
+        post.tags.forEach(tag => {
+          const span = document.createElement('span');
+          span.textContent = "🏷️ " + tag;
+          tagsContainer.appendChild(span);
+        });
+      }
+
+      document.getElementById('modal').style.display = "block";
+    });
+
+    container.appendChild(div);
+  });
+}
+
+// Close modal
+document.getElementById('modal-close').onclick = () => {
+  document.getElementById('modal').style.display = "none";
+};
+window.onclick = (e) => {
+  if(e.target == document.getElementById('modal')) {
+    document.getElementById('modal').style.display = "none";
+  }
+};
+</script>
+</body>
+</html>
