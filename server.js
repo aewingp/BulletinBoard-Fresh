@@ -35,6 +35,10 @@ app.use(express.static(__dirname));
 // Serve admin static files (JS, CSS)
 app.use('/admin', express.static(path.join(__dirname, 'admin')));
 
+// Serve images from local images folder
+app.use('/images', express.static(path.join(__dirname, 'images')));
+
+
 /* -------------------------
    2) Admin Auth
 --------------------------*/

@@ -205,10 +205,31 @@ transform-origin: center;
   background: #7a1e21;
 }
 
+/* CSS */
+body {
+  margin: 0; /* remove default body margin so banner touches top */
+}
+
+.top-banner {
+  width: 100%;      /* full width */
+  overflow: hidden;  /* prevents scrollbars if banner slightly too wide */
+}
+
+.top-banner img {
+  width: 100%;       /* stretch to full width */
+  height: auto;      /* keep aspect ratio */
+  display: block;    /* removes small space below image */
+}  
+
+
   </style>
 </head>
 <body>
-  <h1>Bulletin Board</h1>
+<div class="top-banner">
+  <img src="/images/banner.jpg" alt="Community Bulletin Banner">
+</div>
+
+ 
 
   <!-- Search + Category -->
 <div id="controls">
