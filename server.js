@@ -83,25 +83,20 @@ app.get("/api/me", (req, res) => {
 /* -------------------------
    4) Public posts (read)
 --------------------------*/
-const DATA_PATH = process.env.POSTS_PATH || path.join(__dirname, 'data', 'posts.json');
+const DATA_PATH = path.join('/mnt/data', 'posts.json');
 
+// Read posts
 app.get("/posts", (req, res) => {
   fs.readFile(DATA_PATH, "utf8", (err, data) => {
-    if (err) {
-      // If file doesn't exist, return empty array
-      if (err.code === 'ENOENT') return res.json([]);
-      return res.status(500).send("Error reading posts file");
-    }
+    if (err) return res.status(500).send("Error reading posts file");
     res.type("application/json").send(data);
   });
 });
 
-/* -------------------------
-   5) Admin posts (write) — protected
---------------------------*/
+// 5 Admin write posts
 app.post("/admin/posts", requireAuth, (req, res) => {
   const body = req.body;
-  if (!Array.isArray(body)) return res.status(400).json({ error: "Body must be an array of posts" });
+  if (!Array.isArray(body)) return res.status(400).json({ error: "Body must be an array" });
 
   fs.writeFile(DATA_PATH, JSON.stringify(body, null, 2), (err) => {
     if (err) return res.status(500).json({ error: "Error saving posts" });
