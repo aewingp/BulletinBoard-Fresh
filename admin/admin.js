@@ -1,14 +1,12 @@
-
-// --- Admin JS (clean, fully DOM-ready) ---
+// --- Admin JS (clean, DOM-ready) ---
 let allPosts = [];
 let editId = null;
 
-// --- DOM elements ---
+// --- DOM elements (globals) ---
 let titleInput, teaserInput, contentInput, categorySelect, tagsInput, pinnedCheckbox;
-let imageInput, imagesInput, expirationInput, saveBtn, tbody;
-let loginBtn, logoutBtn, addBtn;
+let imageInput, imagesInput, expirationInput, saveBtn, tbody, addBtn;
 
-// --- Auth bootstrap (runs first) ---
+// --- Auth bootstrap ---
 async function checkAuth() {
   try {
     const me = await fetch('/api/me').then(r => r.json());
@@ -62,26 +60,22 @@ window.addEventListener('DOMContentLoaded', () => {
   checkAuth();
 });
 
-
-/* ==========================
-   initAdmin() - Post Management
-=========================== */
+// --- initAdmin ---
 function initAdmin() {
-  let allPosts = [];
-  let editId = null;
 
-  // --- DOM elements ---
-  const titleInput = document.getElementById('post-title');
-  const teaserInput = document.getElementById('post-teaser');
-  const contentInput = document.getElementById('post-content');
-  const categorySelect = document.getElementById('post-category');
-  const tagsInput = document.getElementById('post-tags');
-  const pinnedCheckbox = document.getElementById('post-pinned');
-  const imageInput = document.getElementById('post-image');
-  const imagesInput = document.getElementById('post-images'); // comma separated extra images
-  const expirationInput = document.getElementById('post-expiration');
-  const saveBtn = document.getElementById('save-post');
-  const tbody = document.getElementById('posts-tbody');
+  // --- Assign DOM elements ---
+  titleInput = document.getElementById('post-title');
+  teaserInput = document.getElementById('post-teaser');
+  contentInput = document.getElementById('post-content');
+  categorySelect = document.getElementById('post-category');
+  tagsInput = document.getElementById('post-tags');
+  pinnedCheckbox = document.getElementById('post-pinned');
+  imageInput = document.getElementById('post-image');
+  imagesInput = document.getElementById('post-images');
+  expirationInput = document.getElementById('post-expiration');
+  saveBtn = document.getElementById('save-post');
+  tbody = document.getElementById('posts-tbody');
+  addBtn = document.getElementById('add-new-btn');
 
   // --- Fetch posts from server ---
   function loadPosts() {
@@ -161,7 +155,7 @@ function initAdmin() {
     editId = null;
   });
 
-  // --- Edit post ---
+  // --- Edit / Delete / TogglePin ---
   window.editPost = function(id) {
     editId = id;
     const post = allPosts.find(p => p.id === id);
@@ -177,21 +171,19 @@ function initAdmin() {
     openModal();
   };
 
-  // --- Delete post ---
   window.deletePost = function(id) {
     if(!confirm('Are you sure you want to delete this post?')) return;
     allPosts = allPosts.filter(p => p.id !== id);
     savePosts();
   };
 
-  // --- Toggle pin ---
   window.togglePin = function(id) {
     const post = allPosts.find(p => p.id === id);
     post.pinned = !post.pinned;
     savePosts();
   };
 
-  // --- Save allPosts to server (protected route) ---
+  // --- Save allPosts to server ---
   function savePosts() {
     fetch('/admin/posts', {
       method: 'POST',
@@ -218,7 +210,7 @@ function initAdmin() {
   }
 
   // --- Add New button ---
-  document.getElementById('add-new-btn').addEventListener('click', () => {
+  addBtn.addEventListener('click', () => {
     editId = null;
     clearForm();
     openModal();
@@ -226,4 +218,8 @@ function initAdmin() {
 
   // --- Initial load ---
   loadPosts();
+}
+
+function closeModal() {
+	document.getElementById('edit-modal').style.display = 'none' ;
 }

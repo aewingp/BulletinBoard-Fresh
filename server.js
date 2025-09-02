@@ -38,7 +38,6 @@ app.use('/admin', express.static(path.join(__dirname, 'admin')));
 // Serve images from local images folder
 app.use('/images', express.static(path.join(__dirname, 'images')));
 
-
 /* -------------------------
    2) Admin Auth
 --------------------------*/
@@ -84,9 +83,15 @@ app.get("/api/me", (req, res) => {
 /* -------------------------
    4) Public posts (read)
 --------------------------*/
+const DATA_PATH = path.join('/mnt/data', 'posts.json');
+
 app.get("/posts", (req, res) => {
-  fs.readFile(path.join(__dirname, "posts.json"), "utf8", (err, data) => {
-    if (err) return res.status(500).send("Error reading posts file");
+  fs.readFile(DATA_PATH, "utf8", (err, data) => {
+    if (err) {
+      // If file doesn't exist, return empty array
+      if (err.code === 'ENOENT') return res.json([]);
+      return res.status(500).send("Error reading posts file");
+    }
     res.type("application/json").send(data);
   });
 });
@@ -98,7 +103,7 @@ app.post("/admin/posts", requireAuth, (req, res) => {
   const body = req.body;
   if (!Array.isArray(body)) return res.status(400).json({ error: "Body must be an array of posts" });
 
-  fs.writeFile(path.join(__dirname, "posts.json"), JSON.stringify(body, null, 2), (err) => {
+  fs.writeFile(DATA_PATH, JSON.stringify(body, null, 2), (err) => {
     if (err) return res.status(500).json({ error: "Error saving posts" });
     res.json({ ok: true });
   });
