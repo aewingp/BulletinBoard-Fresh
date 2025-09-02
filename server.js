@@ -83,7 +83,7 @@ app.get("/api/me", (req, res) => {
 /* -------------------------
    4) Public posts (read)
 --------------------------*/
-const DATA_PATH = path.join('/mnt/data', 'posts.json');
+const DATA_PATH = process.env.POSTS_PATH || path.join(__dirname, 'data', 'posts.json');
 
 app.get("/posts", (req, res) => {
   fs.readFile(DATA_PATH, "utf8", (err, data) => {

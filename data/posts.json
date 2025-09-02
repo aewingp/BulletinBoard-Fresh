@@ -86,4 +86,19 @@
     "expiration": "2025-09-10",
     "date": "2025-09-02"
   }
+[
+  {
+    "id": 1,
+    "date": "2025-09-01",
+    "title": "Welcome!",
+    "teaser": "Our first post",
+    "content": "Hello everyone, welcome to our community board.",
+    "category": "events",
+    "tags": ["welcome"],
+    "pinned": true,
+    "image": "/images/banner.jpg",
+    "images": [],
+    "expiration": "2025-12-31"
+  }
+]
 ]
